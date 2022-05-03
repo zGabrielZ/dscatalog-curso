@@ -109,3 +109,4 @@ java.net.URISyntaxException: Illegal character in path at index 16: file:/C:/Pro
 2022-05-03 15:23:16,413 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
 2022-05-03 15:23:16,415 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
 2022-05-03 15:23:16,415 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered properties files.
+2022-05-03 15:23:16,415 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\gabri\OneDrive\Área de Trabalho\ws-spring-boot\cursos\dscatalog\backend\src\test\resources
