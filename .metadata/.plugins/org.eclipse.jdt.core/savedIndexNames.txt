@@ -1,0 +1,18 @@
+INDEX VERSION 1.131+C:\Users\gabri\OneDrive\Área de Trabalho\ws-spring-boot\cursos\dscatalog\.metadata\.plugins\org.eclipse.jdt.core
+1152036602.index
+1626891848.index
+1865797976.index
+907689241.index
+1965174767.index
+1572154974.index
+939851912.index
+3847119704.index
+736457107.index
+1937796710.index
+4009929838.index
+2711163592.index
+2834288968.index
+2987953234.index
+941592674.index
+3424149627.index
+4244469259.index
