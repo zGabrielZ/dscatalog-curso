@@ -4,8 +4,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.devsuperior.dscatalog.exception.EntidadeNaoEncontradaException;
 import com.devsuperior.dscatalog.modelo.Categoria;
@@ -18,11 +21,24 @@ public class CategoriaService {
 	@Autowired
 	public CategoriaRepositorio categoriaRepositorio;
 	
+	@Transactional
 	public CategoriaDTO inserirCategoria(CategoriaDTO categoriaDTO) {
 		Categoria categoria = new Categoria();
 		categoria.setNome(categoriaDTO.getNome());
 		categoria = categoriaRepositorio.save(categoria);
 		return new CategoriaDTO(categoria);
+	}
+	
+	@Transactional
+	public CategoriaDTO atualizarCategoria(Long id, CategoriaDTO categoriaDTO) {
+		try {
+			Categoria categoria = categoriaRepositorio.getOne(id);
+			categoria.setNome(categoriaDTO.getNome());
+			categoria = categoriaRepositorio.save(categoria);
+			return new CategoriaDTO(categoria);
+		} catch (EntityNotFoundException e) {
+			throw new EntidadeNaoEncontradaException("Categoria não encontrada.");
+		}
 	}
 	
 	public List<CategoriaDTO> findAll(){
