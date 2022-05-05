@@ -1,8 +1,10 @@
 package com.devsuperior.dscatalog.controller;
 import java.net.URI;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -25,8 +28,15 @@ public class CategoriaController {
 	private CategoriaService categoriaService;
 	
 	@GetMapping
-	public ResponseEntity<List<CategoriaDTO>> mostrarCategorias(){
-		List<CategoriaDTO> categorias = categoriaService.findAll();
+	public ResponseEntity<Page<CategoriaDTO>> mostrarCategorias(
+			@RequestParam(value = "pagina",required = false,defaultValue = "0") Integer pagina,
+			@RequestParam(value = "quantidadePagina",required = false,defaultValue = "12") Integer quantidadePagina,
+			@RequestParam(value = "direcao",required = false,defaultValue = "ASC") String direcao,
+			@RequestParam(value = "ordernarPor",required = false,defaultValue = "nome") String ordernarPor){
+		
+		PageRequest pageRequest = PageRequest.of(pagina,quantidadePagina,Direction.valueOf(direcao),ordernarPor);
+		
+		Page<CategoriaDTO> categorias = categoriaService.findAllPaginado(pageRequest);
 		return ResponseEntity.ok().body(categorias); // .ok () Status 200
 	}
 	
