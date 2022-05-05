@@ -18,6 +18,13 @@ public class CategoriaService {
 	@Autowired
 	public CategoriaRepositorio categoriaRepositorio;
 	
+	public CategoriaDTO inserirCategoria(CategoriaDTO categoriaDTO) {
+		Categoria categoria = new Categoria();
+		categoria.setNome(categoriaDTO.getNome());
+		categoria = categoriaRepositorio.save(categoria);
+		return new CategoriaDTO(categoria);
+	}
+	
 	public List<CategoriaDTO> findAll(){
 		List<Categoria> categorias = categoriaRepositorio.findAll();
 		List<CategoriaDTO> categoriaDTOs = categorias.stream().map(c -> new CategoriaDTO(c)).collect(Collectors.toList());
