@@ -1,6 +1,7 @@
 package com.devsuperior.dscatalog.modelo;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -8,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
 @Entity
@@ -25,6 +28,12 @@ public class Categoria implements Serializable{
 	
 	@Column(name = "nome",nullable = false)
 	private String nome;
+	
+	@Column(name = "criado", columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
+	private Instant criado;
+	
+	@Column(name = "atualizado", columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
+	private Instant atualizado;
 
 	public Categoria() {}
 
@@ -49,6 +58,24 @@ public class Categoria implements Serializable{
 		this.nome = nome;
 	}
 	
+	public Instant getCriado() {
+		return criado;
+	}
+
+	public Instant getAtualizado() {
+		return atualizado;
+	}
+	
+	@PrePersist // Quando chamar o save, ele vai ir nesse método
+	public void preInsercao() {
+		criado = Instant.now();
+	}
+	
+	@PreUpdate // Quando chamar o save mas pra atualizar, ele vai ir nesse método
+	public void preAtualizar() {
+		atualizado = Instant.now();
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);
@@ -68,9 +95,8 @@ public class Categoria implements Serializable{
 
 	@Override
 	public String toString() {
-		return "Categoria [id=" + id + ", nome=" + nome + "]";
+		return "Categoria [id=" + id + ", nome=" + nome + ", criado=" + criado + ", atualizado=" + atualizado + "]";
 	}
-	
 	
 	
 }
