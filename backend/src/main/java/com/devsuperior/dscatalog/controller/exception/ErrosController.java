@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.devsuperior.dscatalog.exception.DatabaseException;
 import com.devsuperior.dscatalog.exception.EntidadeNaoEncontradaException;
 import com.devsuperior.dscatalog.exception.modelo.ErroPadrao;
 
@@ -19,6 +20,13 @@ public class ErrosController {
 	public ResponseEntity<ErroPadrao> entidadeNaoEncontradaException(EntidadeNaoEncontradaException e, HttpServletRequest httpServletRequest){
 		HttpStatus status = HttpStatus.NOT_FOUND;
 		ErroPadrao erroPadrao = new ErroPadrao(Instant.now(),status.value(),"Controlador não encontrado", e.getMessage(), httpServletRequest.getRequestURI());
+		return ResponseEntity.status(status).body(erroPadrao);
+	}
+	
+	@ExceptionHandler(DatabaseException.class)
+	public ResponseEntity<ErroPadrao> databaseException(DatabaseException e, HttpServletRequest httpServletRequest){
+		HttpStatus status = HttpStatus.BAD_REQUEST;
+		ErroPadrao erroPadrao = new ErroPadrao(Instant.now(),status.value(),"Excessão Database", e.getMessage(), httpServletRequest.getRequestURI());
 		return ResponseEntity.status(status).body(erroPadrao);
 	}
 }

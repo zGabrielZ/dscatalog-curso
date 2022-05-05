@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,5 +48,11 @@ public class CategoriaController {
 	public ResponseEntity<CategoriaDTO> atualizarCategoria(@PathVariable Long id, @RequestBody CategoriaDTO categoriaDTO){
 		categoriaDTO = categoriaService.atualizarCategoria(id,categoriaDTO);
 		return ResponseEntity.ok().body(categoriaDTO); // .ok () Status 200
+	}
+	
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> deletarCategoria(@PathVariable Long id){
+		categoriaService.deletarCategoria(id);
+		return ResponseEntity.noContent().build(); // .noContent () Status 204
 	}
 }
