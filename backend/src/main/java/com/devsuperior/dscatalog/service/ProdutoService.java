@@ -1,6 +1,8 @@
 package com.devsuperior.dscatalog.service;
 import java.util.Optional;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
@@ -12,6 +14,7 @@ import com.devsuperior.dscatalog.modelo.Categoria;
 import com.devsuperior.dscatalog.modelo.Produto;
 import com.devsuperior.dscatalog.modelo.dto.CategoriaDTO;
 import com.devsuperior.dscatalog.modelo.dto.ProdutoDTO;
+import com.devsuperior.dscatalog.repositorio.CategoriaRepositorio;
 import com.devsuperior.dscatalog.repositorio.ProdutoRepositorio;
 
 @Service
@@ -20,35 +23,29 @@ public class ProdutoService {
 	@Autowired
 	public ProdutoRepositorio produtoRepositorio;
 	
-//	@Transactional
-//	public ProdutoDTO inserirProduto(ProdutoDTO produtoDTO) {
-//		Produto produto = new Produto();
-//		produto.setNome(produtoDTO.getNome());
-//		produto.setDescricao(produtoDTO.getDescricao());
-//		produto.setPreco(produtoDTO.getPreco());
-//		produto.setImagemUrl(produtoDTO.getImagemUrl());
-//		produto.setData(produtoDTO.getData());
-//		
-//		// Adicionando as listas de categorias Dtos para classe Catagoria
-//		for(CategoriaDTO categoriaDTO : produtoDTO.getCategoriaDTOs()) {
-//			Categoria categoria = new Categoria(categoriaDTO.getId(), categoriaDTO.getNome());
-//			produto.getCategorias().add(categoria);
-//		}
-//		return new ProdutoDTO(produto, produto.getCategorias());
-//	}
+	@Autowired
+	public CategoriaRepositorio categoriaRepositorio;
 	
-//	@Transactional
-//	public ProdutoDTO atualizarProduto(Long id, ProdutoDTO categoriaDTO) {
-//		try {
-//			Produto categoria = categoriaRepositorio.getOne(id);
-//			categoria.setNome(categoriaDTO.getNome());
-//			categoria = categoriaRepositorio.save(categoria);
-//			return new ProdutoDTO(categoria);
-//		} catch (EntityNotFoundException e) {
-//			throw new EntidadeNaoEncontradaException("Produto não encontrada.");
-//		}
-//	}
-//	
+	@Transactional
+	public ProdutoDTO inserirProduto(ProdutoDTO produtoDTO) {
+		Produto produto = new Produto();
+		dtoParaEntidade(produtoDTO, produto);
+		produto = produtoRepositorio.save(produto);
+		return new ProdutoDTO(produto, produto.getCategorias());
+	}
+	
+	@Transactional
+	public ProdutoDTO atualizarProduto(Long id, ProdutoDTO produtoDTO) {
+		try {
+			Produto produto = produtoRepositorio.getOne(id);
+			dtoParaEntidade(produtoDTO,produto);
+			produto = produtoRepositorio.save(produto);
+			return new ProdutoDTO(produto,produto.getCategorias());
+		} catch (EntityNotFoundException e) {
+			throw new EntidadeNaoEncontradaException("Produto não encontrado.");
+		}
+	}
+	
 	public void deletarProduto(Long id) {
 		try {
 			Produto produto = produtoRepositorio.getOne(id);
@@ -70,5 +67,26 @@ public class ProdutoService {
 		optionalProduto.orElseThrow(() -> new EntidadeNaoEncontradaException("Produto não encontrado."));
 		ProdutoDTO produtoDTO = new ProdutoDTO(optionalProduto.get(), optionalProduto.get().getCategorias());
 		return produtoDTO;
+	}
+	
+	private void dtoParaEntidade(ProdutoDTO produtoDTO,Produto produto) {
+		produto.setNome(produtoDTO.getNome());
+		produto.setDescricao(produtoDTO.getDescricao());
+		produto.setPreco(produtoDTO.getPreco());
+		produto.setImagemUrl(produtoDTO.getImagemUrl());
+		produto.setData(produtoDTO.getData());
+		
+		// Limpando toda as categorias relacionadas ao produto
+		produto.getCategorias().clear();
+		
+		// Adicionando as listas de categorias Dtos para classe Catagoria e relacionando a classe produto
+		for (CategoriaDTO categoriaDTO : produtoDTO.getCategoriaDTOs()) {
+			try {
+				Categoria categoria = categoriaRepositorio.getOne(categoriaDTO.getId());
+				produto.getCategorias().add(categoria);
+			} catch (EntityNotFoundException e) {
+				throw new EntidadeNaoEncontradaException("Categoria não encontrada. ID : " + categoriaDTO.getId());
+			}
+		}
 	}
 }

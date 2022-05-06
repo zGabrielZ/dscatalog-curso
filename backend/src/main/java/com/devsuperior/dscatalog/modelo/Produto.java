@@ -62,16 +62,13 @@ public class Produto implements Serializable{
 	
 	public Produto() {}
 
-	public Produto(Long id, String nome, String descricao, Double preco, String imagemUrl, Instant data, Instant criado,
-			Instant atualizado) {
+	public Produto(Long id, String nome, String descricao, Double preco, String imagemUrl, Instant data) {
 		this.id = id;
 		this.nome = nome;
 		this.descricao = descricao;
 		this.preco = preco;
 		this.imagemUrl = imagemUrl;
 		this.data = data;
-		this.criado = criado;
-		this.atualizado = atualizado;
 	}
 
 	public Long getId() {
